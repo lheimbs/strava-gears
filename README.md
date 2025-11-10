@@ -100,21 +100,54 @@ strava-gears auto-assign --activity-type Ride --gear-id GEAR_ID --dry-run
 
 ## Architecture
 
-The project is organized as a modular application:
+The project is organized as a modular application with clear separation of concerns:
 
 - `src/strava_gears/core/`: Core API for Strava integration
-  - `client.py`: Strava API client
-  - `auth.py`: OAuth2 authentication
+  - `client.py`: Strava API client wrapper
+  - `auth.py`: OAuth2 authentication flow
   - `config.py`: Configuration management
-  - `heuristics.py`: Gear assignment rules and heuristics
+  - `heuristics.py`: Gear assignment rules and heuristics engine
 - `src/strava_gears/cli/`: Command-line interface
   - `main.py`: Main CLI entry point
   - `activities.py`: Activity listing commands
   - `assign.py`: Gear assignment commands
 
+The core API is completely independent of the CLI, making it easy to add additional interfaces (such as a web interface) in the future without modifying the core functionality.
+
 ## Development
 
-The project uses uv for dependency management and follows a modular architecture to support future extensions (e.g., web interface).
+The project uses uv for dependency management and follows a modular architecture to support future extensions.
+
+### Extending Heuristics
+
+The heuristics system is designed to be extensible. You can create custom rules by using the `GearRule` class:
+
+```python
+from strava_gears.core import GearRule, GearAssigner
+
+# Create a custom rule
+def my_condition(activity):
+    return activity.distance > 50000  # 50km
+
+rule = GearRule("Long Ride", my_condition, "my_road_bike_id")
+
+# Use it with the assigner
+assigner = GearAssigner()
+assigner.add_rule(rule)
+```
+
+Built-in rule factories are available:
+- `create_activity_type_rule`: Match by activity type (Ride, Run, etc.)
+- `create_distance_rule`: Match by distance range
+- `create_name_pattern_rule`: Match by activity name pattern
+
+### Adding a Web Interface
+
+The core API is independent of the CLI, making it straightforward to add a web interface:
+
+1. Create a new `src/strava_gears/web/` package
+2. Import and use the core API classes
+3. The core handles all Strava API interaction and business logic
 
 ## License
 
