@@ -89,12 +89,17 @@ class StravaAuth:
         Returns:
             Token information dict
         """
+        # Start local server to receive callback (port 0 = OS chooses available port)
+        server = HTTPServer(("localhost", 0), OAuth2Handler)
+        actual_port = server.server_address[1]
+
+        # Update redirect_uri to use the actual port
+        self.redirect_uri = f"http://localhost:{actual_port}"
+
         auth_url = self.get_authorization_url()
         print(f"Opening browser for authentication: {auth_url}")
         webbrowser.open(auth_url)
 
-        # Start local server to receive callback
-        server = HTTPServer(("localhost", 8000), OAuth2Handler)
         print("Waiting for authentication...")
         server.handle_request()
 
