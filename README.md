@@ -1,5 +1,7 @@
 # strava-gears
 
+⚠️ Beware: this is a personal project including a lot of vibe-coding ⚠️
+
 Automate setting the used bike/shoe of a given activity based on heuristics.
 
 ## Overview
