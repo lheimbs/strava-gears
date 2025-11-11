@@ -7,23 +7,45 @@ from stravalib.model import DetailedActivity, SummaryGear
 class StravaClient:
     """Client for interacting with the Strava API."""
 
-    def __init__(self, access_token: str | None = None):
+    def __init__(
+        self,
+        access_token: str | None = None,
+        refresh_token: str | None = None,
+        expires_at: int | None = None,
+    ):
         """Initialize the Strava client.
 
         Args:
             access_token: Strava API access token
+            refresh_token: Strava API refresh token (optional, enables auto token refresh)
+            expires_at: Token expiration timestamp (optional, enables auto token refresh)
         """
         self.client = Client()
         if access_token:
             self.client.access_token = access_token
+        if refresh_token:
+            self.client.refresh_token = refresh_token
+        if expires_at:
+            self.client.token_expires = expires_at
 
-    def set_access_token(self, access_token: str) -> None:
+    def set_access_token(
+        self,
+        access_token: str,
+        refresh_token: str | None = None,
+        expires_at: int | None = None,
+    ) -> None:
         """Set the access token for API requests.
 
         Args:
             access_token: Strava API access token
+            refresh_token: Strava API refresh token (optional, enables auto token refresh)
+            expires_at: Token expiration timestamp (optional, enables auto token refresh)
         """
         self.client.access_token = access_token
+        if refresh_token:
+            self.client.refresh_token = refresh_token
+        if expires_at:
+            self.client.token_expires = expires_at
 
     def get_athlete(self):
         """Get the authenticated athlete information."""

@@ -18,8 +18,10 @@ def assign_gear(ctx, activity_id, gear_id):
         click.echo("Not authenticated. Run 'strava-gears auth' first.", err=True)
         raise click.Abort()
 
+    refresh_token = config.get_refresh_token()
+    expires_at = config.get_expires_at()
     try:
-        client = StravaClient(access_token)
+        client = StravaClient(access_token, refresh_token, expires_at)
         client.update_activity_gear(activity_id, gear_id)
         click.echo(f"Successfully assigned gear to activity {activity_id}")
     except Exception as e:
@@ -42,8 +44,10 @@ def auto_assign(ctx, activity_type, gear_id, limit, dry_run):
         click.echo("Not authenticated. Run 'strava-gears auth' first.", err=True)
         raise click.Abort()
 
+    refresh_token = config.get_refresh_token()
+    expires_at = config.get_expires_at()
     try:
-        client = StravaClient(access_token)
+        client = StravaClient(access_token, refresh_token, expires_at)
         activities = client.get_activities(limit=limit)
 
         assigner = GearAssigner()

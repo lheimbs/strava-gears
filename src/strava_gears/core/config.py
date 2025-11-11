@@ -139,3 +139,11 @@ class Config:
             Refresh token if available
         """
         return self.get_token("refresh_token")
+
+    def get_expires_at(self) -> int | None:
+        """Get token expiration timestamp.
+
+        Returns:
+            Token expiration timestamp if available
+        """
+        return self.get_token("expires_at")

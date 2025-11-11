@@ -1,10 +1,14 @@
 """Command-line interface for strava-gears."""
 
 import click
+from dotenv import load_dotenv
 
 from strava_gears.cli.activities import list_activities, list_gear
 from strava_gears.cli.assign import assign_gear, auto_assign
 from strava_gears.core import Config, StravaAuth, StravaClient
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 @click.group()
@@ -16,8 +20,8 @@ def cli(ctx):
 
 
 @cli.command()
-@click.option("--client-id", prompt=True, help="Strava API client ID")
-@click.option("--client-secret", prompt=True, hide_input=True, help="Strava API client secret")
+@click.option("--client-id", envvar='STRAVA_CLIENT_ID', help="Strava API client ID")
+@click.option("--client-secret", envvar='STRAVA_CLIENT_SECRET', help="Strava API client secret")
 @click.pass_context
 def auth(ctx, client_id, client_secret):
     """Authenticate with Strava API."""
@@ -50,8 +54,10 @@ def status(ctx):
         click.echo("Not authenticated. Run 'strava-gears auth' to authenticate.")
         return
 
+    refresh_token = config.get_refresh_token()
+    expires_at = config.get_expires_at()
     try:
-        client = StravaClient(access_token)
+        client = StravaClient(access_token, refresh_token, expires_at)
         athlete = client.get_athlete()
         click.echo(f"Authenticated as: {athlete.firstname} {athlete.lastname}")
     except Exception as e:

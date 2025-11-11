@@ -17,8 +17,10 @@ def list_activities(ctx, limit):
         click.echo("Not authenticated. Run 'strava-gears auth' first.", err=True)
         raise click.Abort()
 
+    refresh_token = config.get_refresh_token()
+    expires_at = config.get_expires_at()
     try:
-        client = StravaClient(access_token)
+        client = StravaClient(access_token, refresh_token, expires_at)
         activities = client.get_activities(limit=limit)
 
         if not activities:
@@ -51,6 +53,8 @@ def list_gear(ctx):
         click.echo("Not authenticated. Run 'strava-gears auth' first.", err=True)
         raise click.Abort()
 
+    refresh_token = config.get_refresh_token()
+    expires_at = config.get_expires_at()
     try:
         client = StravaClient(access_token)
         gear_list = client.get_athlete_gear()
