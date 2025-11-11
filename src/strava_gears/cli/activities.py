@@ -22,6 +22,7 @@ def list_activities(ctx, limit):
     try:
         client = StravaClient(access_token, refresh_token, expires_at)
         activities = client.get_activities(limit=limit)
+        gear_list = client.get_athlete_gear()
 
         if not activities:
             click.echo("No activities found.")
@@ -29,7 +30,9 @@ def list_activities(ctx, limit):
 
         click.echo(f"\nFound {len(activities)} activities:\n")
         for activity in activities:
-            gear_name = activity.gear.name if activity.gear else "No gear"
+            gear_id = activity.gear_id
+            gear_name = next((g.name for g in gear_list if g.id == gear_id), "Unknown gear")
+
             distance_km = float(activity.distance) / 1000 if activity.distance else 0
             click.echo(f"ID: {activity.id}")
             click.echo(f"  Name: {activity.name}")
@@ -56,7 +59,7 @@ def list_gear(ctx):
     refresh_token = config.get_refresh_token()
     expires_at = config.get_expires_at()
     try:
-        client = StravaClient(access_token)
+        client = StravaClient(access_token, refresh_token, expires_at)
         gear_list = client.get_athlete_gear()
 
         if not gear_list:
@@ -67,7 +70,6 @@ def list_gear(ctx):
         for gear in gear_list:
             click.echo(f"ID: {gear.id}")
             click.echo(f"  Name: {gear.name}")
-            click.echo(f"  Type: {'Bike' if hasattr(gear, 'frame_type') else 'Shoes'}")
             if hasattr(gear, "distance"):
                 distance_km = float(gear.distance) / 1000 if gear.distance else 0
                 click.echo(f"  Distance: {distance_km:.2f} km")

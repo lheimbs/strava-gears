@@ -59,7 +59,7 @@ class StravaAuth:
         return self.client.authorization_url(
             client_id=self.client_id,
             redirect_uri=self.redirect_uri,
-            scope=["read", "activity:read_all", "activity:write"],
+            scope=["read", "activity:read_all", "activity:write", "profile:read_all"],
         )
 
     def exchange_code_for_token(self, code: str) -> dict:
