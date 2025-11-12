@@ -38,7 +38,7 @@ source .venv/bin/activate  # On Unix/macOS
 
 Before using the application, you need to create a Strava API application:
 
-1. Go to https://www.strava.com/settings/api
+1. Go to <https://www.strava.com/settings/api>
 2. Create a new application
 3. Note your Client ID and Client Secret
 
@@ -104,12 +104,12 @@ strava-gears auto-assign --activity-type Ride --gear-id GEAR_ID --dry-run
 
 The project is organized as a modular application with clear separation of concerns:
 
-- `src/strava_gears/core/`: Core API for Strava integration
+- `strava_gears/core/`: Core API for Strava integration
   - `client.py`: Strava API client wrapper
   - `auth.py`: OAuth2 authentication flow
   - `config.py`: Configuration management
   - `heuristics.py`: Gear assignment rules and heuristics engine
-- `src/strava_gears/cli/`: Command-line interface
+- `strava_gears/cli/`: Command-line interface
   - `main.py`: Main CLI entry point
   - `activities.py`: Activity listing commands
   - `assign.py`: Gear assignment commands
@@ -139,6 +139,7 @@ assigner.add_rule(rule)
 ```
 
 Built-in rule factories are available:
+
 - `create_activity_type_rule`: Match by activity type (Ride, Run, etc.)
 - `create_distance_rule`: Match by distance range
 - `create_name_pattern_rule`: Match by activity name pattern
@@ -147,7 +148,7 @@ Built-in rule factories are available:
 
 The core API is independent of the CLI, making it straightforward to add a web interface:
 
-1. Create a new `src/strava_gears/web/` package
+1. Create a new `strava_gears/web/` package
 2. Import and use the core API classes
 3. The core handles all Strava API interaction and business logic
 
